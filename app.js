@@ -9,10 +9,11 @@ var mongoose = require('mongoose');
 dotenv.config();
 var dbUser = process.env.DB_USER;
 var dbMdp = process.env.DB_PASS;
+var mongoDB = 'mongodb+srv://'+dbUser+':'+dbMdp+'@cluster0.fhmxd.mongodb.net/local_library?retryWrites=true&w=majority';
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var mongoDB = 'mongodb+srv://'+dbUser+':'+dbMdp+'@cluster0.fhmxd.mongodb.net/local_library?retryWrites=true&w=majority'
+var catalogRouter = require('./routes/catalog');  //Import routes for "catalog" area of site
 
 mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true });
 var db = mongoose.connection;
@@ -32,6 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/catalog', catalogRouter);  // Add catalog routes to middleware chain.
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
