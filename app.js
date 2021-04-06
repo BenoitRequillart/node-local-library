@@ -3,9 +3,20 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var dotenv = require('dotenv');
+var mongoose = require('mongoose');
+
+dotenv.config();
+var dbUser = process.env.DB_USER;
+var dbMdp = process.env.DB_PASS;
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var mongoDB = 'mongodb+srv://'+dbUser+':'+dbMdp+'@cluster0.fhmxd.mongodb.net/local_library?retryWrites=true&w=majority'
+
+mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true });
+var db = mongoose.connection;
+
 
 var app = express();
 
@@ -26,6 +37,8 @@ app.use('/users', usersRouter);
 app.use(function(req, res, next) {
   next(createError(404));
 });
+
+db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 
 // error handler
 app.use(function(err, req, res, next) {
